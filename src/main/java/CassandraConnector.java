@@ -26,10 +26,19 @@ public class CassandraConnector {
     }
 
     public List<Flight> getFlightsBySpecificDate(Date date){
-        List<Flight> flights = new LinkedList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateFormatted = formatter.format(date);
         String query = "SELECT * FROM Flight WHERE starttime >= '" + dateFormatted + " 00:00:00' and starttime <= '" + dateFormatted + " 23:59:59"  + "' ALLOW FILTERING; ";
+        return getFlightsByQuery(query);
+    }
+
+    public List<Flight> getFlightsInPriceRange(double minPrice, double maxPrice){
+        String query = "SELECT * FROM Flight WHERE price >= " + minPrice + " and price <= " + maxPrice  + " ALLOW FILTERING; ";
+        return getFlightsByQuery(query);
+    }
+
+    private List<Flight> getFlightsByQuery(String query){
+        List<Flight> flights = new LinkedList<>();
         ResultSet resultSet = session.execute(query);
         for (Row row : resultSet) {
             Flight flight = parseQuery(row);
