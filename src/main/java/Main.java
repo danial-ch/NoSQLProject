@@ -3,6 +3,7 @@ import com.datastax.driver.core.Session;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Main {
 
@@ -12,7 +13,10 @@ public class Main {
         client.connect("127.0.0.1", 9042);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            client.getFlightsBySpecificDate(formatter.parse("2022-05-03"));
+            List<Flight> flights = client.getFlightsBySpecificDate(formatter.parse("2022-05-03"));
+            for (Flight flight : flights) {
+                System.out.println(flight.toString());
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -15,13 +15,14 @@ public class Flight {
     private Date finishTime;
     private double duration;
     private int capacity;
+    private double price;
     private List<String> airlineCompany;
     private List<String> stops;
 
     public Flight() {
     }
 
-    public Flight(int flightId, String origin, String originCity, String originCountry, String destination, String destinationCity, String destinationCountry, String classType, Date startTime, Date finishTime, double duration, int capacity, List<String> airlineCompany, List<String> stops) {
+    public Flight(int flightId, String origin, String originCity, String originCountry, String destination, String destinationCity, String destinationCountry, String classType, Date startTime, Date finishTime, double duration, int capacity, List<String> airlineCompany, List<String> stops, double price) {
         this.flightId = flightId;
         this.origin = origin;
         this.originCity = originCity;
@@ -36,6 +37,7 @@ public class Flight {
         this.capacity = capacity;
         this.airlineCompany = airlineCompany;
         this.stops = stops;
+        this.price = price;
     }
 
     public int getFlightId() {
@@ -148,5 +150,34 @@ public class Flight {
 
     public void setStops(List<String> stops) {
         this.stops = stops;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "flightId=" + flightId +
+                ", origin='" + origin + '\'' +
+                ", originCity='" + originCity + '\'' +
+                ", originCountry='" + originCountry + '\'' +
+                ", destination='" + destination + '\'' +
+                ", destinationCity='" + destinationCity + '\'' +
+                ", destinationCountry='" + destinationCountry + '\'' +
+                ", classType='" + classType + '\'' +
+                ", startTime=" + startTime +
+                ", finishTime=" + finishTime +
+                ", duration=" + duration +
+                ", capacity=" + capacity +
+                ", price=" + price +
+                ", airlineCompany=" + airlineCompany +
+                ", stops=" + stops +
+                '}';
     }
 }
