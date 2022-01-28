@@ -4,10 +4,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class CassandraConnector {
 
@@ -32,16 +29,25 @@ public class CassandraConnector {
         if(classType != null){
             query.append(" and classType = '").append(classType).append("'");
         }
-        if(orderBy != null){
-            query.append(" order by ").append(orderBy.getOrderBy()).append(" ").append(orderBy.getType());
-        }
         query.append(" ALLOW FILTERING; ");
-        return getFlightsByQuery(query.toString());
+        List<Flight> flights = getFlightsByQuery(query.toString());
+        if(orderBy != null){
+            orderFlights(flights,orderBy);
+//            query.append(" order by ").append(orderBy.getOrderBy()).append(" ").append(orderBy.getType());
+        }
+        return flights;
     }
 
-    public List<Flight> getFlightsInPriceRange(double minPrice, double maxPrice){
-        String query = "SELECT * FROM Flight WHERE price >= " + minPrice + " and price <= " + maxPrice  + " ALLOW FILTERING; ";
-        return getFlightsByQuery(query);
+    public List<Flight> getFlightsInPriceRange(double minPrice, double maxPrice, String classType, OrderBy orderBy){
+        StringBuilder query = new StringBuilder("SELECT * FROM Flight WHERE price >= " + minPrice + " and price <= " + maxPrice);
+        if(classType != null){
+            query.append(" and classType = '").append(classType).append("'");
+        }
+        List<Flight> flights = getFlightsByQuery(query.toString());
+        if(orderBy != null){
+            orderFlights(flights,orderBy);
+        }
+        return getFlightsByQuery(query.toString());
     }
 
     private List<Flight> getFlightsByQuery(String query){
@@ -52,6 +58,18 @@ public class CassandraConnector {
             flights.add(flight);
         }
         return flights;
+    }
+
+    private void orderFlights(List<Flight> initialList, OrderBy orderBy){
+        if(orderBy.getOrderBy().equals("Price")){
+            initialList.sort(Comparator.comparing(Flight::getPrice));
+        }
+        else {
+            initialList.sort(Comparator.comparing(Flight::getStartTime));
+        }
+        if(orderBy.getType().equals("DESC")){
+            initialList.sort(Collections.reverseOrder());
+        }
     }
 
     private Flight parseQuery(Row row){
