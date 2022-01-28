@@ -12,15 +12,15 @@ public class Main {
         CassandraConnector client = new CassandraConnector();
         client.connect("127.0.0.1", 9042);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//        try {
-//            List<Flight> flights = client.getFlightsBySpecificDate(formatter.parse("2022-05-03"));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-        List<Flight> flights = client.getFlightsInPriceRange(100,600);
-        for (Flight flight : flights) {
-            System.out.println(flight.toString());
+        try {
+            List<Flight> flights = client.getFlightsBySpecificDate(formatter.parse("2022-05-03"),"economy",new OrderBy("DESC","price"));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+//        List<Flight> flights = client.getFlightsInPriceRange(100,600);
+//        for (Flight flight : flights) {
+//            System.out.println(flight.toString());
+//        }
 //        Session session = client.getSession();
 //        String query = "INSERT INTO FLIGHT (flightid,airlinecompany,capacity,classType,destination,destinationCity,destinationCountry,finishtime,flightduration,origin,origincity,origincountry,price,starttime,stops) values (1,['iran air'],250,'economy','Istanbul Airport','Istanbul','Turkey','2022-05-03 12:20:00',4,'Imam airport','Tehran','Iran',200,'2022-05-03 16:20:00',[]); ";
 //        session.execute(query);

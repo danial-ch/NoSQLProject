@@ -25,11 +25,18 @@ public class CassandraConnector {
         session.execute("USE Alibaba;");
     }
 
-    public List<Flight> getFlightsBySpecificDate(Date date){
+    public List<Flight> getFlightsBySpecificDate(Date date, String classType, OrderBy orderBy){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateFormatted = formatter.format(date);
-        String query = "SELECT * FROM Flight WHERE starttime >= '" + dateFormatted + " 00:00:00' and starttime <= '" + dateFormatted + " 23:59:59"  + "' ALLOW FILTERING; ";
-        return getFlightsByQuery(query);
+        StringBuilder query = new StringBuilder("SELECT * FROM Flight WHERE starttime >= '" + dateFormatted + " 00:00:00' and starttime <= '" + dateFormatted + " 23:59:59"  + "'");
+        if(classType != null){
+            query.append(" and classType = '").append(classType).append("'");
+        }
+        if(orderBy != null){
+            query.append(" order by ").append(orderBy.getOrderBy()).append(" ").append(orderBy.getType());
+        }
+        query.append(" ALLOW FILTERING; ");
+        return getFlightsByQuery(query.toString());
     }
 
     public List<Flight> getFlightsInPriceRange(double minPrice, double maxPrice){
