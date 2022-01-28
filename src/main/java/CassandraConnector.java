@@ -43,11 +43,40 @@ public class CassandraConnector {
         if(classType != null){
             query.append(" and classType = '").append(classType).append("'");
         }
+        query.append(" ALLOW FILTERING; ");
         List<Flight> flights = getFlightsByQuery(query.toString());
         if(orderBy != null){
             orderFlights(flights,orderBy);
         }
-        return getFlightsByQuery(query.toString());
+        return flights;
+    }
+
+    public void getMinMaxPrice(String origin, String destination, String classType){
+        StringBuilder query = new StringBuilder("SELECT min(price) as minPrice ,max(price) as maxPrice FROM Flight WHERE origin = '" + origin + "' and destination = '" + destination + "'");
+        if(classType != null){
+            query.append(" and classType = '").append(classType).append("'");
+        }
+        query.append(" ALLOW FILTERING; ");
+        Row result = session.execute(query.toString()).one();
+        System.out.println(result.getDouble("minPrice"));
+        System.out.println(result.getDouble("maxPrice"));
+    }
+
+    public Flight getCheapestFlight(String origin, String destination, double minPrice, double maxPrice, String classType){
+        StringBuilder query = new StringBuilder("SELECT min(price) as minPrice FROM Flight WHERE origin = '" + origin + "' and destination = '" + destination + "' and price >= " + minPrice + " and price <= " + maxPrice);
+        if(classType != null){
+            query.append(" and classType = '").append(classType).append("'");
+        }
+        query.append(" ALLOW FILTERING; ");
+        Row result = session.execute(query.toString()).one();
+        double minFlightPrice = result.getDouble("minPrice");
+        query = new StringBuilder("SELECT * FROM Flight WHERE price = " + minFlightPrice );
+        if(classType != null){
+            query.append(" and classType = '").append(classType).append("'");
+        }
+        query.append(" ALLOW FILTERING; ");
+        Row result2 = session.execute(query.toString()).one();
+        return parseQuery(result2);
     }
 
     private List<Flight> getFlightsByQuery(String query){
