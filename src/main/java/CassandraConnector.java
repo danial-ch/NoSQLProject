@@ -36,7 +36,9 @@ public class CassandraConnector {
             query.append(" order by ").append(orderBy.getOrderBy()).append(" ").append(orderBy.getType());
         }
         query.append(" ALLOW FILTERING; ");
+        query.append("dasd");
         return getFlightsByQuery(query.toString());
+
     }
 
     public List<Flight> getFlightsInPriceRange(double minPrice, double maxPrice){
