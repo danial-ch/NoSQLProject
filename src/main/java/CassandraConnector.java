@@ -70,7 +70,7 @@ public class CassandraConnector {
         query.append(" ALLOW FILTERING; ");
         Row result = session.execute(query.toString()).one();
         double minFlightPrice = result.getDouble("minPrice");
-        query = new StringBuilder("SELECT * FROM Flight WHERE price = " + minFlightPrice );
+        query = new StringBuilder("SELECT * FROM Flight WHERE price = " + minFlightPrice + " and origin = '" + origin + "' and destination = '" + destination + "'");
         if(classType != null){
             query.append(" and classType = '").append(classType).append("'");
         }
